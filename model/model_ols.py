@@ -94,6 +94,7 @@ print(results.summary())
 print(results.summary().as_latex())
 # RESIDUALS
 prediction = results.predict(start=0, end=len(y)-1, dynamic=True)
+print('R2 SARIMAX MODEL', r2_score(y.values, prediction))
 res = pd.DataFrame(prediction, columns=['error'])
 res = pd.concat([res, y], axis=1)
 res['error'] = res['Pax - Pax(-7)'] - res['error']
@@ -101,9 +102,7 @@ fig, ax = plot.subplots(2, 1, figsize=(15, 8))
 fig = sm.graphics.tsa.plot_acf(res['error'], lags=50, ax=ax[0])
 fig = sm.graphics.tsa.plot_pacf(res['error'], lags=50, ax=ax[1])
 # plot.show()
-plot.close(
-
-)
+plot.close()
 # RESIDUAL ESTATIONARITY
 sts.test_stationarity(res['error'], plot_show=False)
 # RESIDUAL SERIAL CORRELATION

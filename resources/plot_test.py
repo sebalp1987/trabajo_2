@@ -71,6 +71,7 @@ for col in df.columns:
         plot.legend(loc="lower right")
         plot.ylabel('Nominal Elasticity')
         plot.savefig(STRING.img_files + 'ELASTICITY_' + col + '.png')
+        plot.show()
         plot.close()
 
         del df[col], df[col + '_SYNTETIC']

@@ -37,7 +37,7 @@ ax1.set_ylabel('Humidity (%)', color='r')
 ax2 = ax1.twinx()
 ax2.plot(df['PREC (MM)'], label='Precipitation (mm)', color='mediumseagreen')
 ax2.set_ylabel('Precipitation (mm)', color='g')
-fig.legend(loc="upper right")
+# fig.legend(loc="lower right")
 ax2.grid(False)
 plot.ylim(0)
 # plot.show()
@@ -74,7 +74,7 @@ plot.plot(df_2['DATE'], df_2['PASSENGER_SUM_DAY'])
 plot.ylabel('PASSENGERS')
 plot.axvline(x='2016-04-08', color='k', linestyle='--')
 plot.xticks(fontsize=10, rotation=45)
-plot.show()
+# plot.show()
 
 
 # Economy Variables
@@ -98,8 +98,8 @@ ax2.plot(df['PRICE_LEVEL'], label='IPC', color='mediumseagreen')
 ax2.plot(df['WAGE'], label='Wage Level', color='mediumseagreen', linestyle='--')
 ax2.set_ylabel('Wage Index - CPI', color='g')
 
-fig.legend(loc="upper right")
-
+ax2.legend(loc="lower right")
+ax1.legend(loc='lower left')
 ax2.grid(False)
 plot.show()
 plot.close()
