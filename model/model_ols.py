@@ -88,7 +88,7 @@ x_ols = x_ols.dropna(axis=0)
 y = y[7:]
 x_ols.dropna(axis=0)
 # The PACF show a seasonal effect every 7 days (S.MA.7) No other autocorrelation effects.
-mod = sm.tsa.statespace.SARIMAX(endog=y, exog=x_ols, trend=None, order=(0, 0, 0), seasonal_order=(0, 0, 1, 7))
+mod = sm.tsa.statespace.SARIMAX(endog=y, exog=x_ols, trend=None, order=(0, 0, 1), seasonal_order=(0, 0, 2, 7))
 results = mod.fit()
 print(results.summary())
 print(results.summary().as_latex())
@@ -105,8 +105,14 @@ fig = sm.graphics.tsa.plot_pacf(res['error'], lags=50, ax=ax[1])
 plot.close()
 # RESIDUAL ESTATIONARITY
 sts.test_stationarity(res['error'], plot_show=False)
-# RESIDUAL SERIAL CORRELATION
+# RESIDUAL SERIAL CORRELATIONd
 sts.serial_correlation(res['error'], plot_show=False)
+fig, ax = plot.subplots(2, 1, figsize=(15, 8))
+fig = sm.graphics.tsa.plot_acf(res['error'], lags=50, ax=ax[0])
+fig = sm.graphics.tsa.plot_pacf(res['error'], lags=50, ax=ax[1])
+plot.show()
+plot.close()
+
 stat, p = shapiro(res['error'])
 print('Statistics=%.3f, p=%.3f' % (stat, p))
 stat, p = normaltest(res['error'])
