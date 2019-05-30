@@ -55,19 +55,19 @@ df['tend_metro'] = tendencia_metro
 df['DATE'] = pd.to_datetime(df['DATE'], format='%Y-%m-%d')
 df = df.sort_values(by='DATE', ascending=True)
 df['DATE'] = df['DATE'].apply(lambda x: x.date()).map(str)
-plot.plot(df['DATE'], df['tend_bus'], label='BUS')
-plot.plot(df['tend_train'], label='TRAIN')
-plot.plot(df['tend_metro'], label='METRO')
+plot.plot(df['DATE'], df['tend_bus'], label='Bus')
+plot.plot(df['tend_train'], label='Train')
+plot.plot(df['tend_metro'], label='Metro')
 plot.xticks(fontsize=10, rotation=45)
-plot.ylabel('PASSENGERS')
-plot.legend(loc="lower right")
+plot.ylabel('PASSENGERS (millions)')
+plot.legend(loc="center right")
 
 xposition = ['2014-01-01', '2014-07-01', '2016-04-08']
 for xv in xposition:
     plot.axvline(x=xv, color='k', linestyle='--')
 x = df['DATE'].tolist()
 plot.xticks(x[::20], fontsize=10, rotation=45)
-# plot.show()
+plot.show()
 plot.close()
 df_2 = df[df['DATE'] > '2016-03-25']
 plot.plot(df_2['DATE'], df_2['PASSENGER_SUM_DAY'])
@@ -116,12 +116,12 @@ df.loc[df['DATE'] >= STRING.fares.date_fare_apr_16, 'NOMINAL_FARE'] = 6.38
 df['REAL_FARE'] = df['NOMINAL_FARE'] / df['DLS_LAST']
 
 
-plot.plot(df['DATE'], df['NOMINAL_FARE'])
-plot.plot(df['REAL_FARE'])
+plot.plot(df['DATE'], df['NOMINAL_FARE'], label='Nominal Fare (ARS)')
+plot.plot(df['REAL_FARE'], label='Real Fare (USD)')
 x = df['DATE'].tolist()
 plot.xticks(x[::20], fontsize=10, rotation=45)
 plot.ylabel('PRICE')
-plot.legend(loc="lower right")
+plot.legend(loc="upper center")
 xposition = ['2014-01-01', '2014-07-01', '2016-04-08']
 for xv in xposition:
     plot.axvline(x=xv, color='k', linestyle='--')
