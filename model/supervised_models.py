@@ -37,7 +37,7 @@ for col in variable_used:
         if col_d.endswith(col):
             variables.append(col_d)
 
-variable_used = variables
+variable_used = variables + ['AR7']
 
 # Replace by DICTIONARY
 for col in df.columns.values.tolist():
@@ -75,17 +75,24 @@ def calcSma(data, smaPeriod):
 
     return np.array(empty_list + sub_result)
 
-
+ma1 = calcSma(y['Pax - Pax(-7)'], smaPeriod=2).tolist()
 ma7 = calcSma(y['Pax - Pax(-7)'], smaPeriod=8).tolist()
-x['AR7'] = y['Pax - Pax(-7)'].shift(7)
+ma14 = calcSma(y['Pax - Pax(-7)'], smaPeriod=15).tolist()
 x['s.AR7'] = y['Pax - Pax(-7)'] - y['Pax - Pax(-7)'].shift(7)
+x['MA1'] = pd.DataFrame(ma1, index=x.index)
 x['MA7'] = pd.DataFrame(ma7, index=x.index)
+x['MA14'] = pd.DataFrame(ma14, index=x.index)
+x['s.MA1'] = y['Pax - Pax(-7)'] - x['MA1']
 x['s.MA7'] = y['Pax - Pax(-7)'] - x['MA7']
-del x['AR7']
+x['s.MA14'] = y['Pax - Pax(-7)'] - x['MA14']
+del x['s.AR7']
+del x['MA1']
 del x['MA7']
+del x['MA14']
+del x['s.MA1']
 
 x = x.dropna(axis=0)
-y = y[7:]
+y = y[x.index[0]::]
 train_x = x[x['TEST'] == 0].drop('TEST', axis=1)
 valid_x = x[x['TEST'] == 1].drop('TEST', axis=1)
 test_x = x[x['TEST'] == 2].drop('TEST', axis=1)
@@ -139,11 +146,11 @@ test_pred['ENET_SYNTETIC'] = pd.DataFrame(enet.predict(test_x), index=test_x.ind
 
 try:
     elasticity_file_valid = pd.read_csv(STRING.elasticity_file_valid, sep=';', encoding='latin1').set_index(valid_x.index)
-    elasticity_file_test = pd.read_csv(STRING.elasticity_file_test, sep=';', encoding='latin1').set_index(valid_x.index)
+    elasticity_file_test = pd.read_csv(STRING.elasticity_file_test, sep=';', encoding='latin1').set_index(test_x.index)
 
 except FileNotFoundError:
     elasticity_file_valid = pd.DataFrame(index=valid_x.index)
-    elasticity_file_test = pd.DataFrame(index=valid_x.index)
+    elasticity_file_test = pd.DataFrame(index=test_x.index)
 print(elasticity_file_valid)
 elasticity_file_valid = elasticity_file_valid.drop(
         [x for x in elasticity_file_valid.columns.values.tolist() if 'ENET' in x], axis=1)
@@ -253,7 +260,7 @@ for name, file_model in models.items():
         elasticity_file_valid = pd.read_csv(STRING.elasticity_file_valid, sep=';', encoding='latin1').set_index(
             valid_x.index)
         elasticity_file_test = pd.read_csv(STRING.elasticity_file_test, sep=';', encoding='latin1').set_index(
-            valid_x.index)
+            test_x.index)
 
     except FileNotFoundError:
         elasticity_file_valid = pd.DataFrame(index=valid_x.index)

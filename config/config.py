@@ -8,7 +8,7 @@ params = {
                    'TREND', 'Vehicle Fleet'
                    ],
 
-    'alphaStar': '0.207346901153297',
+    'alphaStar': '0.20948037110556494',
     'criterion': 'mse',
     'max_depth': None,
     'random_state': 42,

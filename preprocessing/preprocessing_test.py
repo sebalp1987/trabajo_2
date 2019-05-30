@@ -58,7 +58,7 @@ plot.close()
 
 # DESEASON THE VARIABLE
 # Se ve claramente una tendencia cada 7 días de seasonality
-df['PASSENGER_SUM_DAY'] = np.log(df['PASSENGER_SUM_DAY']) - np.log(df['PASSENGER_SUM_DAY'].shift(7))
+df['PASSENGER_SUM_DAY'] = np.log(df['PASSENGER_SUM_DAY']) - np.log(df['PASSENGER_SUM_DAY']).shift(7)
 df = df.dropna(axis=0)
 sts.test_stationarity(df['PASSENGER_SUM_DAY'], plot_show=True)
 
@@ -70,25 +70,16 @@ for col in df.columns.values.tolist():
     df[col] = df[col].map(float)
 bool_cols = [col for col in df
              if df[[col]].dropna().isin([0, 1]).all().values]
-for cols in df.drop(['PASSENGER_SUM_DAY', 'TREND', 'PRECIPITACION-MM', 'FARE_NOMINAL_INDEX'
-                     ] + bool_cols, axis=1).columns.values.tolist():
-    print(cols)
-    # df[cols] = np.log(df[cols]) log-linear
-    df[cols] = df[cols].map(float)
+for cols in df.drop(['TREND', 'PASSENGER_SUM_DAY', 'FARE_NOMINAL_INDEX'], axis=1).columns.values.tolist():
     dif = 0
-
-    try:
-        t_value, critical_value = sts.test_stationarity(df[cols], plot_show=False)
-
-        while t_value > critical_value:
-            dif += 1
-            print(t_value)
-            print(critical_value)
-            print(dif)
-            t_value, critical_value = sts.test_stationarity((df[cols] - df[cols].shift(dif)).dropna(axis=0),
-                                                            plot_show=False)
-    except:
-        pass
+    # df[cols] = np.log(df[cols] + 1)
+    t_value, critical_value = sts.test_stationarity(df[cols], plot_show=False)
+    while t_value > critical_value:
+        dif += 1
+        print(t_value)
+        print(critical_value)
+        t_value, critical_value = sts.test_stationarity(
+            (df[cols] - df[cols].shift(dif)).dropna(axis=0), plot_show=False)
     if dif > 0:
         df['D' + str(dif) + '_' + cols] = df[cols] - df[cols].shift(dif)
         del df[cols]

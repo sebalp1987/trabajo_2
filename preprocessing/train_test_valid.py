@@ -5,6 +5,8 @@ def train_test_valid_data(data, train_path, valid_path, test_path):
     df = pd.read_csv(data, sep=';', encoding='latin1')
     df['DATE'] = pd.to_datetime(df['DATE'])
     df = df.sort_values('DATE', ascending=True)
+    df['AR7'] = df['PASSENGER_SUM_DAY'].shift(7)
+    df = df.dropna(axis=0)
 
     test = df[df['DATE'] >= STRING.fares.date_fare_apr_16]
     df = df[df['DATE'] < STRING.fares.date_fare_apr_16]
