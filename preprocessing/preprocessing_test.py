@@ -65,8 +65,6 @@ sts.test_stationarity(df['PASSENGER_SUM_DAY'], plot_show=True)
 
 # ESTACIONARIEDAD DEMAS VARIABLES
 for col in df.columns.values.tolist():
-    print(col)
-    print(df[col])
     df[col] = df[col].map(float)
 bool_cols = [col for col in df
              if df[[col]].dropna().isin([0, 1]).all().values]
